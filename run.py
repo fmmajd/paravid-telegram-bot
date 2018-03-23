@@ -8,7 +8,14 @@ def start(bot, update, args):
     # import pdb
     # pdb.set_trace()
     chat_id = update.message.chat_id
-    bot.sendMessage(chat_id, 'سلام به {} خوش آمدید!'.format(args[0]))
+
+    if not args:
+        bot.sendMessage(
+            chat_id, 'لطفا دستور استارت را با نام خود فراخوانی کنید')
+    elif len(args) == 1:
+        bot.sendMessage(chat_id, 'سلام به {} خوش آمدید!'.format(args[0]))
+    else:
+        bot.sendMessage(chat_id, 'لطفا یک اسم وارد کنید')
 
 
 start_command = CommandHandler('start', start, pass_args=True)
