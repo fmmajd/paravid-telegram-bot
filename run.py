@@ -1,5 +1,6 @@
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
+from telegram.ext import CallbackQueryHandler
 
 from telegram.chataction import ChatAction
 
@@ -35,23 +36,53 @@ def service_keyboard(bot, update):
 
 def favor_keyboard(bot, update):
     chat_id = update.message.chat_id
+    # this was normal inline buttons
+    # keyboard = [
+    #     [
+    #         InlineKeyboardButton('باتن اولی', 'https://google.com'),
+    #         InlineKeyboardButton('باتن دومی', 'https://bing.com')
+    #     ]
+    # ]
     keyboard = [
         [
-            InlineKeyboardButton('باتن اولی', 'https://google.com'),
-            InlineKeyboardButton('باتن دومی', 'https://bing.com')
+            InlineKeyboardButton('باتن اولی', callback_data='1'),
+            InlineKeyboardButton('باتن دومی', callback_data='2'),
+        ],
+        [
+            InlineKeyboardButton('باتن سومی', callback_data='3'),
         ]
     ]
     bot.sendMessage(chat_id, 'یکی از باتنا رو شانسی انتخاب نید!', reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+def favor_handler_button(bot, update):
+    query = update.callback_query
+    data = query.data
+    chat_id = query.message.chat_id
+    message_id = query.message.message_id
+
+    description = 'درباره دوره اینجا نوشته می‌شود. داده فرستاده شده {} است' .format(data)
+    if data == 1:
+        description = 'داده اول'
+    elif data == 2:
+        description = 'داده دوم'
+    elif data == 3:
+        description = 'داده سوم'
+
+    bot.editMessageText(text=description, chat_id=chat_id, message_id=message_id)
 
 
 start_command = CommandHandler('start', start)
 service_command = CommandHandler('service', service_keyboard)
 favor_command = CommandHandler('links', favor_keyboard)
 
+favor_handler = CallbackQueryHandler(favor_handler_button)
+
 
 updater.dispatcher.add_handler(start_command)
 updater.dispatcher.add_handler(service_command)
 updater.dispatcher.add_handler(favor_command)
+updater.dispatcher.add_handler(favor_handler)
 
 updater.start_polling()
 updater.idle()  # for windows, to exit terminal with ctrl-c
