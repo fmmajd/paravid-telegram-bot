@@ -90,9 +90,18 @@ def feature_inline_query(bot, update):
     bot.answerInlineQuery(results=results, inline_query_id=inline_query_id)
 
 
+def send_photo(bot, update):
+    chat_id = update.message.chat_id
+    bot.send_chat_action(chat_id, ChatAction.UPLOAD_PHOTO)
+    photo = open('./img/bot.jpg', 'rb')
+    bot.sendPhoto(chat_id, photo, 'صرفا برای شادی روح!')
+    photo.close()
+
+
 start_command = CommandHandler('start', start)
 service_command = CommandHandler('service', service_keyboard)
 favor_command = CommandHandler('links', favor_keyboard)
+photo_command = CommandHandler('photo', send_photo)
 
 favor_handler = CallbackQueryHandler(favor_handler_button)
 feature_handler = InlineQueryHandler(feature_inline_query)
@@ -101,6 +110,8 @@ feature_handler = InlineQueryHandler(feature_inline_query)
 updater.dispatcher.add_handler(start_command)
 updater.dispatcher.add_handler(service_command)
 updater.dispatcher.add_handler(favor_command)
+updater.dispatcher.add_handler(photo_command)
+
 updater.dispatcher.add_handler(favor_handler)
 updater.dispatcher.add_handler(feature_handler)
 
