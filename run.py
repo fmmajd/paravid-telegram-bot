@@ -1,26 +1,24 @@
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
+from telegram.chataction import ChatAction
 
 from secret import bot_token
 
 updater = Updater(bot_token)
 
 
-def start(bot, update, args):
+def start(bot, update):
     # import pdb
     # pdb.set_trace()
     chat_id = update.message.chat_id
+    first_name = update.message.chat.first_name
+    last_name = update.message.chat.last_name
 
-    if not args:
-        bot.sendMessage(
-            chat_id, 'لطفا دستور استارت را با نام خود فراخوانی کنید')
-    elif len(args) == 1:
-        bot.sendMessage(chat_id, 'سلام به {} خوش آمدید!'.format(args[0]))
-    else:
-        bot.sendMessage(chat_id, 'لطفا یک اسم وارد کنید')
+    bot.send_chat_action(chat_id, ChatAction.TYPING)
+    bot.sendMessage(chat_id, 'سلام به {} {} خوش آمدید!'.format(first_name, last_name))
 
 
-start_command = CommandHandler('start', start, pass_args=True)
+start_command = CommandHandler('start', start)
 
 
 updater.dispatcher.add_handler(start_command)
