@@ -1,12 +1,17 @@
+from uuid import uuid4
+
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 from telegram.ext import CallbackQueryHandler
+from telegram.ext import InlineQueryHandler
 
 from telegram.chataction import ChatAction
 
 from telegram import ReplyKeyboardMarkup
 from telegram import InlineKeyboardButton
 from telegram import InlineKeyboardMarkup
+from telegram import InputTextMessageContent
+from telegram import InlineQueryResultArticle
 
 from secret import bot_token
 
@@ -72,17 +77,32 @@ def favor_handler_button(bot, update):
     bot.editMessageText(text=description, chat_id=chat_id, message_id=message_id)
 
 
+def feature_inline_query(bot, update):
+    query = update.inline_query.query
+    inline_query_id=update.inline_query.id
+    results = list()
+    # import pdb
+    # pdb.set_trace()
+    results.append(InlineQueryResultArticle(
+        id=uuid4(), title="Uppercase", input_message_content=InputTextMessageContent(query.upper())))
+    results.append(InlineQueryResultArticle(
+        id=uuid4(), title="Lowercase", input_message_content=InputTextMessageContent(query.lower())))
+    bot.answerInlineQuery(results=results, inline_query_id=inline_query_id)
+
+
 start_command = CommandHandler('start', start)
 service_command = CommandHandler('service', service_keyboard)
 favor_command = CommandHandler('links', favor_keyboard)
 
 favor_handler = CallbackQueryHandler(favor_handler_button)
+feature_handler = InlineQueryHandler(feature_inline_query)
 
 
 updater.dispatcher.add_handler(start_command)
 updater.dispatcher.add_handler(service_command)
 updater.dispatcher.add_handler(favor_command)
 updater.dispatcher.add_handler(favor_handler)
+updater.dispatcher.add_handler(feature_handler)
 
 updater.start_polling()
 updater.idle()  # for windows, to exit terminal with ctrl-c
