@@ -120,10 +120,19 @@ def send_photo(bot, update):
     # photo.close()
 
 
+def send_document(bot, update):
+    chat_id = update.message.chat_id
+    bot.send_chat_action(chat_id, ChatAction.UPLOAD_DOCUMENT)
+    doc = open('./other/sample.pdf', 'rb')
+    bot.sendDocument(chat_id, doc)
+    doc.close()
+
+
 start_command = CommandHandler('start', start)
 service_command = CommandHandler('service', service_keyboard)
 favor_command = CommandHandler('links', favor_keyboard)
 photo_command = CommandHandler('photo', send_photo)
+doc_command = CommandHandler('doc', send_document)
 
 favor_handler = CallbackQueryHandler(favor_handler_button)
 feature_handler = InlineQueryHandler(feature_inline_query)
@@ -133,6 +142,7 @@ updater.dispatcher.add_handler(start_command)
 updater.dispatcher.add_handler(service_command)
 updater.dispatcher.add_handler(favor_command)
 updater.dispatcher.add_handler(photo_command)
+updater.dispatcher.add_handler(doc_command)
 
 updater.dispatcher.add_handler(favor_handler)
 updater.dispatcher.add_handler(feature_handler)
