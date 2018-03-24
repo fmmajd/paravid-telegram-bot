@@ -12,6 +12,7 @@ from telegram import InlineKeyboardButton
 from telegram import InlineKeyboardMarkup
 from telegram import InputTextMessageContent
 from telegram import InlineQueryResultArticle
+from telegram import error
 
 from secret import bot_token
 
@@ -94,7 +95,13 @@ def send_photo(bot, update):
     chat_id = update.message.chat_id
     bot.send_chat_action(chat_id, ChatAction.UPLOAD_PHOTO)
     photo = open('./img/bot.jpg', 'rb')
-    bot.sendPhoto(chat_id, photo, 'صرفا برای شادی روح!')
+    try:
+        bot.sendPhoto(chat_id, photo, 'صرفا برای شادی روح!')
+    except error.BadRequest as e:
+        if str(e) == 'Photo_invalid_dimensions':
+            bot.sendMessage(chat_id, 'ابعاد عکس خوب نیست نمیشه فرستاد')
+        else:
+            bot.sendMessage(chat_id, 'مشکل ناشناخته به وجود آمده')
     photo.close()
 
 
