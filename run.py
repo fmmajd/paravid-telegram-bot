@@ -1,5 +1,6 @@
 from uuid import uuid4
 from PIL import Image
+import logging
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -16,6 +17,11 @@ from telegram import InlineQueryResultArticle
 from telegram import error
 
 from secret import bot_token
+
+logging.basicConfig(
+    level=logging.WARNING,
+    filemode='./logs/user_log.txt',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 updater = Updater(bot_token)
 
