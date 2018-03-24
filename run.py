@@ -1,4 +1,5 @@
 from uuid import uuid4
+from PIL import Image
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -94,15 +95,29 @@ def feature_inline_query(bot, update):
 def send_photo(bot, update):
     chat_id = update.message.chat_id
     bot.send_chat_action(chat_id, ChatAction.UPLOAD_PHOTO)
-    photo = open('./img/bot.jpg', 'rb')
-    try:
-        bot.sendPhoto(chat_id, photo, 'صرفا برای شادی روح!')
-    except error.BadRequest as e:
-        if str(e) == 'Photo_invalid_dimensions':
-            bot.sendMessage(chat_id, 'ابعاد عکس خوب نیست نمیشه فرستاد')
-        else:
-            bot.sendMessage(chat_id, 'مشکل ناشناخته به وجود آمده')
+
+    img = Image.open('./img/bot.jpg')
+    img.thumbnail((500, 500))
+
+    unique_id = str(uuid4())
+    img_path = './garbage/thumbnail - ' + unique_id
+    img.save(img_path, 'JPEG')
+
+    photo = open(img_path, 'rb')
+    bot.sendPhoto(chat_id, photo, 'صرفا برای شادی روح!')
     photo.close()
+
+    # photo = open('./img/bot.jpg', 'rb')
+    # try except dds a big load to script
+    # in order to optimize it, always narrow the type of exceptions
+    # try:
+    #     bot.sendPhoto(chat_id, photo, 'صرفا برای شادی روح!')
+    # except error.BadRequest as e:
+    #     if str(e) == 'Photo_invalid_dimensions':
+    #         bot.sendMessage(chat_id, 'ابعاد عکس خوب نیست نمیشه فرستاد')
+    #     else:
+    #         bot.sendMessage(chat_id, 'مشکل ناشناخته به وجود آمده')
+    # photo.close()
 
 
 start_command = CommandHandler('start', start)
