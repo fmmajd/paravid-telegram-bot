@@ -1,7 +1,9 @@
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 
-updater = Updater('568438669:AAGANxKfG1HjvhfOJpWQewljIjKTXMqbd4E')
+from secret import bot_token
+
+updater = Updater(bot_token)
 
 
 def start(bot, update, args):
